@@ -1,29 +1,70 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowRight, ChevronRight, Search, TrendingUp, Clock, Tag, Shield, Truck, Zap, BookOpen, Video, Users, Award, Smartphone, Home, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DealCardComponent } from "@/components/deals/deal-card"
 import { Sidebar } from "@/components/layout/sidebar"
-import { mockDeals, topVotedDeals, popularCoupons } from "@/lib/data/mock-deals"
 import { getCurrentPortal } from "@/lib/config/portals"
+import { productService } from "@/lib/supabase/services"
 
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("Todas")
   const portal = getCurrentPortal()
+  const [products, setProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const productsData = await productService.getAll({
+          status: 'published',
+          country: portal.country,
+          limit: 10
+        })
+        setProducts(productsData)
+      } catch (error) {
+        console.error('Error loading products:', error)
+        setProducts([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProducts()
+  }, [portal.country])
 
   const categories = [
-    { name: "Todas", count: 156, icon: "🔥" },
-    { name: "Tecnologia", count: 34, icon: "💻" },
-    { name: "Livros", count: 28, icon: "📚" },
-    { name: "Casa", count: 23, icon: "🏠" },
-    { name: "Estudo", count: 19, icon: "🎓" },
-    { name: "Aplicativos", count: 12, icon: "📱" },
-    { name: "Material Escolar", count: 17, icon: "✏️" },
-    { name: "Impressão 3D", count: 8, icon: "🖨️" },
-    { name: "Software", count: 9, icon: "💾" },
-    { name: "Cursos", count: 14, icon: "🎥" },
+    { name: "Todas", count: products.length, icon: "🔥" },
+    { name: "Tecnologia", count: products.filter(p => p.category === 'tecnologia' || p.categoryName === 'Tecnologia').length, icon: "💻" },
+    { name: "Livros", count: products.filter(p => p.category === 'livros' || p.categoryName === 'Livros').length, icon: "📚" },
+    { name: "Casa", count: products.filter(p => p.category === 'casa' || p.categoryName === 'Casa').length, icon: "🏠" },
+    { name: "Estudo", count: products.filter(p => p.category === 'estudo' || p.categoryName === 'Estudo').length, icon: "🎓" },
+    { name: "Aplicativos", count: products.filter(p => p.category === 'aplicativos' || p.categoryName === 'Aplicativos').length, icon: "📱" },
+    { name: "Material Escolar", count: products.filter(p => p.category === 'material-escolar' || p.categoryName === 'Material Escolar').length, icon: "✏️" },
+    { name: "Impressão 3D", count: products.filter(p => p.category === 'impressao-3d' || p.categoryName === 'Impressão 3D').length, icon: "🖨️" },
+    { name: "Software", count: products.filter(p => p.category === 'software' || p.categoryName === 'Software').length, icon: "💾" },
+    { name: "Cursos", count: products.filter(p => p.category === 'cursos' || p.categoryName === 'Cursos').length, icon: "🎥" },
   ]
+
+  // Mock data for coupons and top voted deals
+  const popularCoupons = [
+    { store: "Amazon", code: "AMAZON15", discount: "15%", expiry: "31/12/2026" },
+    { store: "Fnac", code: "FNAC20", discount: "20%", expiry: "30/11/2026" },
+    { store: "Worten", code: "WORTEN10", discount: "10%", expiry: "31/10/2026" },
+    { store: "PC Diga", code: "PCDIGA5", discount: "5%", expiry: "30/09/2026" },
+    { store: "AliExpress", code: "ALI25", discount: "25%", expiry: "31/08/2026" },
+  ]
+
+  const topVotedDeals = products
+    .sort((a, b) => (b.votes || 0) - (a.votes || 0))
+    .slice(0, 3)
+    .map(product => ({
+      id: product.id,
+      title: product.name,
+      category: product.categoryName || product.category || 'Categoria',
+      votes: product.votes || 0
+    }))
 
   const guides = [
     { title: "Produtos Mais Vendidos da Amazon Portugal", description: "Descubra os produtos mais populares e melhor avaliados", votes: 289 },
@@ -211,15 +252,48 @@ export default function HomePage() {
 
               {/* Deals Feed */}
               <div className="space-y-6">
-                {mockDeals.map((deal) => (
-                  <DealCardComponent key={deal.id} deal={deal} />
-                ))}
+                {loading ? (
+                  <div className="text-center py-12">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mb-4"></div>
+                    <p className="text-gray-400">Carregando ofertas...</p>
+                  </div>
+                ) : products.length > 0 ? (
+                  products.map((product) => (
+                    <DealCardComponent 
+                      key={product.id} 
+                      deal={{
+                        id: product.id,
+                        title: product.name,
+                        description: product.description || 'Descrição não disponível',
+                        originalPrice: product.originalPrice,
+                        currentPrice: product.currentPrice,
+                        discount: product.discount,
+                        category: product.categoryName || product.category || 'Categoria',
+                        store: product.storeName || product.store || 'Loja',
+                        votes: product.votes || Math.floor(Math.random() * 100) + 10,
+                        expiryDate: product.expiryDate || '',
+                        imageUrl: product.imageUrl || 'https://via.placeholder.com/400x300/f0f0f0/666666?text=Produto',
+                        affiliateUrl: product.affiliateUrl || '#',
+                        isFeatured: product.isFeatured || false,
+                        isExpired: false,
+                        rating: product.rating || 4.5,
+                        country: portal.country,
+                        currency: portal.currency
+                      }}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-gray-400">Nenhuma oferta disponível no momento.</p>
+                    <p className="text-gray-400 text-sm mt-2">Acesse o painel administrativo para adicionar produtos.</p>
+                  </div>
+                )}
               </div>
 
               {/* Load More */}
               <div className="mt-8 text-center">
                 <Button variant="outline" className="px-8">
-                  Carregar mais ofertas (12 de 156)
+                  Carregar mais ofertas ({products.length} de {products.length})
                 </Button>
               </div>
             </div>

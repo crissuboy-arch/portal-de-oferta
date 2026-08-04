@@ -3,9 +3,15 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --secondary: #7c3aed;
+  --primary: #0F1117;        /* fundo principal escuro */
+  --primary-hover: #11141C;  /* cabeçalho */
+  --secondary: #FF6A00;      /* laranja principal */
+  --secondary-hover: #E85D00; /* laranja hover */
+  --card-dark: #171A23;      /* cards escuros */
+  --border: #292D38;         /* bordas */
+  --white: #F7F7F7;          /* branco */
+  --gray-light: #D1D5DB;     /* cinza claro */
+  --green: #16A34A;          /* verde somente para desconto/economia */
   --accent: #f59e0b;
   --success: #10b981;
   --warning: #f59e0b;
@@ -21,6 +27,12 @@
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-card-dark: var(--card-dark);
+  --color-border: var(--border);
+  --color-white: var(--white);
+  --color-gray-light: var(--gray-light);
+  --color-green: var(--green);
   --color-accent: var(--accent);
   --color-success: var(--success);
   --color-warning: var(--warning);
@@ -30,8 +42,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--primary);
+    --foreground: var(--white);
   }
 }
 

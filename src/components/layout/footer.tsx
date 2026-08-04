@@ -100,16 +100,6 @@ export function Footer() {
                     {portal.country === "ES" ? "Contacto" : "Contacto"}
                   </Link>
                 </li>
-                <li>
-                  <Link href="/afiliados" className="text-gray-300 hover:text-orange-400 transition-colors">
-                    {portal.country === "ES" ? "Programa de Afiliados" : "Programa de Afiliados"}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/parcerias" className="text-gray-300 hover:text-orange-400 transition-colors">
-                    {portal.country === "ES" ? "Asociaciones Comerciales" : "Parcerias Comerciais"}
-                  </Link>
-                </li>
               </ul>
             </div>
 
@@ -132,11 +122,6 @@ export function Footer() {
                 <li>
                   <Link href={portal.settings.cookiePolicyUrl || "/cookies"} className="text-gray-300 hover:text-orange-400 transition-colors">
                     {portal.country === "ES" ? "Política de Cookies" : "Política de Cookies"}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/afiliados-aviso" className="text-gray-300 hover:text-orange-400 transition-colors">
-                    {portal.country === "ES" ? "Aviso de Afiliados" : "Aviso de Afiliados"}
                   </Link>
                 </li>
               </ul>
