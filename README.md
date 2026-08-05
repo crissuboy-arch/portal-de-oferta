@@ -1,244 +1,185 @@
-# Plataforma Multiportal - Next.js 15
+# Portal de Ofertas Portugal
 
-Uma plataforma multiportal reutilizável desenvolvida com Next.js 15, TypeScript e Tailwind CSS. Permite criar múltiplos portais independentes com configurações personalizadas.
+Um portal completo de ofertas e descontos para Portugal com painel administrativo integrado.
 
-## 🎯 Portais Disponíveis
+## 🚀 Funcionalidades
 
-### Portal 3D Brasil (`3d-printing-portal`) - **Portal Padrão**
-- **Domínio**: localhost:3000
-- **Especialização**: Impressão 3D, filamentos, impressoras, acessórios
-- **Cores**: Azul (#2563eb) e Roxo (#7c3aed)
-- **País**: Brasil (pt-BR, BRL)
+### 🛒 Público
+- **Busca avançada** - Produtos, categorias e lojas
+- **Ofertas em destaque** - Destaques do dia e semana
+- **Categorias organizadas** - Navegação por categoria
+- **Cupons de desconto** - Cupons ativos e verificados
+- **Newsletter** - Inscrição para alertas de ofertas
+- **Design responsivo** - Mobile-first e otimizado
 
-### Portal eBooks Portugal (`ebooks-portugal`)
-- **Domínio**: ebooks.pt
-- **Especialização**: eBooks, livros digitais, conteúdos educativos
-- **Cores**: Verde (#10b981) e Violeta (#8b5cf6)
-- **País**: Portugal (pt-PT, EUR)
+### 🛠️ Administrativo
+- **CRUD completo** - Produtos, categorias, lojas, cupons
+- **Importação de produtos** - Por URL, imagem ou texto
+- **Configurações de aparência** - Personalização completa
+- **Barra superior editável** - Campanhas e promoções
+- **Estatísticas reais** - Dados do banco de dados
+- **Autenticação segura** - Supabase Auth
 
-### USA Deals Portal (`usa-deals`)
-- **Domínio**: deals.us
-- **Especialização**: Ofertas e descontos nos EUA
-- **Cores**: Vermelho (#dc2626) e Azul (#2563eb)
-- **País**: Estados Unidos (en-US, USD)
+## 🏗️ Tecnologias
 
-### Portal Saúde & Bem-Estar (`saude-bemestar`)
-- **Domínio**: saudebemestar.com.br
-- **Especialização**: Saúde, bem-estar, suplementos
-- **Cores**: Verde (#10b981) e Azul (#3b82f6)
-- **País**: Brasil (pt-BR, BRL)
+- **Next.js 16** - React framework com SSR
+- **Supabase** - Banco de dados PostgreSQL + Auth + Storage
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS** - Estilização utilitária
+- **Vercel** - Hosting e deploy automático
 
-## 🏗️ Arquitetura Multiportal
+## 📦 Instalação Local
 
-### Sistema de Configuração
-Cada portal tem configurações independentes:
-- **Identificação**: nome, slug, domínio, subdomínio
-- **Localização**: país, idioma, moeda, fuso horário
-- **Design**: cores temáticas primária/secundária
-- **Navegação**: menu personalizado por portal
-- **SEO**: meta tags, Open Graph, configurações específicas
-- **Funcionalidades**: quais módulos estão habilitados
+```bash
+# Clonar repositório
+git clone https://github.com/crissuboy-arch/portal-de-oferta.git
+cd portal-de-oferta
 
-### Estrutura de Diretórios Atualizada
+# Instalar dependências
+npm install
+
+# Configurar ambiente
+cp .env.example .env.local
+# Editar .env.local com suas credenciais
+
+# Iniciar servidor
+npm run dev
+```
+
+## 🔧 Configuração Supabase
+
+1. **Criar projeto** em [Supabase](https://supabase.com)
+2. **Executar schema SQL** no SQL Editor:
+   ```sql
+   -- Executar conteúdo de setup-supabase.sql
+   ```
+3. **Criar usuário admin**:
+   - Authentication → Users → Add User
+   - Email: admin@portalofertas.pt
+   - Password: Admin123!
+4. **Criar bucket Storage**:
+   - Storage → New bucket
+   - Nome: portal-images
+   - Público: ✅ ON
+
+## 🌐 Deploy na Vercel
+
+### Opção 1: Deploy Automático
+1. Conectar repositório GitHub na Vercel
+2. Configurar variáveis de ambiente:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon
+   ```
+3. Deploy automático com cada push
+
+### Opção 2: Deploy Manual
+```bash
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Login
+vercel login
+
+# Deploy
+vercel
+```
+
+## 🔐 Variáveis de Ambiente
+
+### **Variáveis Públicas (Cliente)**
+```
+NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon
+NEXT_PUBLIC_APP_NAME="Portal de Ofertas Portugal"
+NEXT_PUBLIC_APP_URL=https://seu-portal.vercel.app
+```
+
+### **Variáveis Privadas (Servidor)**
+```
+GROQ_API_KEY=sua_chave_groq
+OPENAI_API_KEY=sua_chave_openai
+NVIDIA_API_KEY=sua_chave_nvidia
+OPENROUTER_API_KEY=sua_chave_openrouter
+```
+
+## 📊 Estrutura do Banco
+
+### **Tabelas Principais**
+- `products` - Produtos com preços e descontos
+- `categories` - Categorias hierárquicas
+- `stores` - Lojas/afiliados
+- `coupons` - Cupons de desconto
+- `settings` - Configurações do portal
+- `users` - Usuários do sistema
+- `top_bar_campaigns` - Campanhas da barra superior
+
+### **Row Level Security (RLS)**
+- Público só vê conteúdo ativo/publicado
+- Apenas admins podem criar/editar/excluir
+- Autenticação com Supabase Auth
+
+## 🧪 Testes
+
+```bash
+# Testar conexão Supabase
+http://localhost:3000/api/test-connection
+
+# Testar busca
+http://localhost:3000/buscar?q=tecnologia
+
+# Painel admin
+http://localhost:3000/admin/login
+# Credenciais: admin@portalofertas.pt / Admin123!
+```
+
+## 📁 Estrutura de Pastas
+
 ```
 src/
-├── lib/config/
-│   ├── portals.ts          # Configuração de todos os portais
-│   ├── app.ts              # API para portal atual
-│   └── countries.ts        # Configuração de países (legado)
-├── types/
-│   └── index.ts           # Tipos TypeScript para multiportal
-├── app/
-│   ├── page.tsx           # Homepage dinâmica por portal
-│   ├── layout.tsx         # Layout dinâmico com cores do portal
-│   ├── products/          # Produtos específicos
-│   ├── blog/              # Blog específico
-│   └── admin/             # Painel administrativo
-└── components/
-    ├── layout/
-    │   ├── header.tsx     # Header dinâmico com menu do portal
-    │   └── footer.tsx     # Footer dinâmico com links do portal
-    └── ui/               # Componentes UI reutilizáveis
+├── app/                    # Rotas Next.js
+│   ├── admin/             # Painel administrativo
+│   ├── api/               # API routes
+│   ├── buscar/            # Página de busca
+│   └── setup/             # Configuração inicial
+├── components/            # Componentes React
+│   ├── layout/            # Layout components
+│   ├── ui/                # UI components
+│   └── deals/             # Componentes de ofertas
+├── lib/                   # Utilities e services
+│   ├── supabase/          # Supabase client e services
+│   ├── auth/              # Autenticação
+│   └── config/            # Configurações do portal
+└── styles/                # Estilos globais
 ```
 
-## 🚀 Funcionalidades por Portal
+## 🚨 Troubleshooting
 
-### Configurações Personalizadas
-- **Nome e Descrição**: Únicos para cada portal
-- **Cores Temáticas**: Paleta de cores personalizada
-- **Menu de Navegação**: Itens específicos por portal
-- **Rodapé**: Links e seções configuráveis
-- **Redes Sociais**: Configurações independentes
-- **SEO**: Meta tags, keywords, Open Graph específicos
+### **Conexão Supabase falha**
+1. Verificar `.env.local` com chaves corretas
+2. Executar `supabase-schema-safe.sql` no SQL Editor
+3. Testar com `/api/test-connection`
 
-### Funcionalidades Habilitáveis
-```typescript
-interface PortalFeatures {
-  enableBlog: boolean           // Sistema de blog
-  enableProducts: boolean       // Catálogo de produtos
-  enableAffiliates: boolean     // Programa de afiliados
-  enableMultiCountry: boolean   // Suporte a múltiplos países
-  enableAdminPanel: boolean     // Painel administrativo
-  enableUserAccounts: boolean   // Sistema de usuários
-  enableCheckout: boolean       // Processo de checkout
-  enableReviews: boolean        // Sistema de avaliações
-  enableNewsletter: boolean     // Newsletter
-  enableSearch: boolean         // Busca
-}
-```
+### **Build falha na Vercel**
+1. Verificar variáveis de ambiente configuradas
+2. Checar logs de build na Vercel Dashboard
+3. Testar build local: `npm run build`
 
-## 🔧 Como Adicionar um Novo Portal
+### **Autenticação não funciona**
+1. Criar usuário admin no Supabase Auth
+2. Verificar políticas RLS no SQL Editor
+3. Testar login em `/admin/login`
 
-1. **Adicionar configuração** em `src/lib/config/portals.ts`:
-```typescript
-{
-  id: "novo-portal",
-  name: "Nome do Portal",
-  slug: "slug-unico",
-  domain: "dominio.com",
-  // ... outras configurações
-}
-```
+## 📞 Suporte
 
-2. **Configurar cores temáticas**:
-```typescript
-primaryColor: "#cor-primaria",
-secondaryColor: "#cor-secundaria",
-accentColor: "#cor-destaque",
-```
+- **Issues**: [GitHub Issues](https://github.com/crissuboy-arch/portal-de-oferta/issues)
+- **Documentação**: `/setup` página interativa
+- **SQL Schema**: `setup-supabase.sql` completo
 
-3. **Definir menu e navegação**:
-```typescript
-menuItems: [
-  { id: "home", label: "Início", href: "/", order: 1 },
-  { id: "products", label: "Produtos", href: "/products", order: 2 },
-  // ... outros itens
-]
-```
+## 📄 Licença
 
-4. **Configurar SEO**:
-```typescript
-seo: {
-  defaultTitle: "Título SEO",
-  defaultDescription: "Descrição SEO",
-  keywords: ["palavra1", "palavra2"],
-  robots: "index, follow"
-}
-```
+MIT License - Veja LICENSE para detalhes.
 
-## 📊 Sistema de Tipos TypeScript
+---
 
-### Tipos Principais
-- `PortalConfig`: Configuração completa de um portal
-- `MenuItem`: Item do menu de navegação
-- `FooterSection`: Seção do rodapé
-- `SEOConfig`: Configurações de SEO
-- `PortalFeatures`: Funcionalidades habilitadas
-- `PortalSettings`: Configurações específicas
-
-### Entidades por Portal
-Todas as entidades (Produto, BlogPost, User, etc.) incluem `portalId` para identificar a qual portal pertencem.
-
-## 🛠️ Como Executar
-
-1. Clone o repositório
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-3. Execute o servidor:
-   ```bash
-   npm run dev
-   ```
-4. Acesse o portal padrão (3D Brasil):
-   - http://localhost:3000
-
-5. Para acessar outros portais (em desenvolvimento):
-   - http://localhost:3000/3d-printing (Portal 3D)
-   - Switcher disponível no header
-
-## 🔄 Detecção Automática de Portal
-
-### Em Produção
-```typescript
-export function getCurrentPortal(): PortalConfig {
-  // Detecta portal pelo domínio/subdomínio
-  const hostname = window.location.hostname
-  return getPortalByDomain(hostname) || defaultPortal
-}
-```
-
-### Em Desenvolvimento
-```typescript
-export function getCurrentPortal(): PortalConfig {
-  // Retorna portal padrão (3D Brasil)
-  return defaultPortal
-}
-```
-
-## 📈 Próximas Etapas
-
-### 1. Roteamento por Domínio
-- Configurar NGINX/Apache para rotas por subdomínio
-- Middleware Next.js para detecção automática
-
-### 2. Banco de Dados Multi-tenant
-- Schema por portal usando Prisma
-- Isolamento de dados entre portais
-
-### 3. Sistema de Templates
-- Templates de layout por categoria de portal
-- Componentes específicos por tipo (3D, eBooks, Saúde)
-
-### 4. Administração Central
-- Painel para gerenciar múltiplos portais
-- Deploy automatizado de novos portais
-
-### 5. Internacionalização Avançada
-- i18n com suporte a múltiplos idiomas
-- Conteúdo localizado por país
-
-## 🎨 Design System
-
-### Componentes Adaptativos
-- **Header**: Mostra menu específico do portal
-- **Footer**: Links configuráveis por portal
-- **Button**: Usa cores do portal automaticamente
-- **Card**: Adapta-se ao contexto do portal
-
-### Cores Dinâmicas
-```css
-:root {
-  --primary: ${portal.primaryColor};
-  --primary-hover: ${adjustColor(portal.primaryColor, -20)};
-  --secondary: ${portal.secondaryColor};
-}
-```
-
-## 📋 Checklist de Novo Portal
-
-- [ ] Configuração básica em `portals.ts`
-- [ ] Cores temáticas definidas
-- [ ] Menu de navegação configurado
-- [ ] Rodapé com links relevantes
-- [ ] Configurações de SEO
-- [ ] Funcionalidades habilitadas
-- [ ] Conteúdo específico (se aplicável)
-- [ ] Testes de build e execução
-
-## 🚨 Notas Importantes
-
-1. **Build Bem-sucedido**: Todos os portais compilam no mesmo build
-2. **Código Compartilhado**: Componentes reutilizáveis entre portais
-3. **Configuração Isolada**: Cada portal tem configurações independentes
-4. **SEO Otimizado**: Meta tags específicas por portal
-5. **Design Responsivo**: Adapta-se a qualquer dispositivo
-
-## 🤝 Contribuindo
-
-Para adicionar um novo tipo de portal:
-1. Analise portais existentes como referência
-2. Adicione configuração em `portals.ts`
-3. Adapte conteúdo específico nas páginas
-4. Teste o build com `npm run build`
-5. Execute para verificar funcionamento# portal-de-oferta
+**Desenvolvido com ❤️ para Portugal** 🇵🇹

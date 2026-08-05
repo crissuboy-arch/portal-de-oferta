@@ -4,10 +4,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
-        pathname: '/**',
+        protocol: 'https',
+        hostname: '**',
       },
     ],
   },
@@ -17,6 +15,12 @@ const nextConfig: NextConfig = {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     NVIDIA_API_KEY: process.env.NVIDIA_API_KEY,
     OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
   },
 };
 
