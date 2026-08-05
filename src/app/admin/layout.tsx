@@ -15,7 +15,8 @@ import {
   X,
   Download,
   BarChart3,
-  FileText
+  FileText,
+  Palette
 } from "lucide-react"
 import { authService } from "@/lib/supabase/services"
 
@@ -26,6 +27,7 @@ const navigation = [
   { name: "Categorias", href: "/admin/categorias", icon: Tag },
   { name: "Lojas", href: "/admin/lojas", icon: Store },
   { name: "Cupons", href: "/admin/cupons", icon: Ticket },
+  { name: "Aparência", href: "/admin/aparencia", icon: Palette },
   { name: "Configurações", href: "/admin/configuracoes", icon: Settings },
 ]
 

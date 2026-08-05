@@ -12,26 +12,48 @@ export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("Todas")
   const portal = getCurrentPortal()
   const [products, setProducts] = useState<any[]>([])
+  const [stats, setStats] = useState({
+    todayProducts: 0,
+    totalSavings: 0,
+    positiveRating: 0,
+    activeMembers: 0,
+    activeStores: 0,
+    activeCategories: 0
+  })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const loadProducts = async () => {
+    const loadData = async () => {
       try {
+        // Carregar produtos
         const productsData = await productService.getAll({
           status: 'published',
           country: portal.country,
           limit: 10
         })
         setProducts(productsData)
+        
+        // Carregar estatísticas básicas (simplificado por enquanto)
+        const storesCount = productsData.length > 0 ? 5 : 0 // Mock temporário
+        const categoriesCount = productsData.length > 0 ? 8 : 0 // Mock temporário
+        
+        setStats({
+          todayProducts: productsData.length,
+          totalSavings: productsData.reduce((acc, p) => acc + (p.original_price - p.current_price), 0),
+          positiveRating: productsData.length > 0 ? 95 : 0,
+          activeMembers: 0,
+          activeStores: storesCount,
+          activeCategories: categoriesCount
+        })
       } catch (error) {
-        console.error('Error loading products:', error)
+        console.error('Error loading data:', error)
         setProducts([])
       } finally {
         setLoading(false)
       }
     }
 
-    loadProducts()
+    loadData()
   }, [portal.country])
 
   const categories = [
@@ -170,30 +192,30 @@ export default function HomePage() {
             
             {/* Stats Placeholder */}
             <div className="hidden lg:block">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <div className="text-center mb-6">
-                  <div className="text-4xl font-bold mb-2">🔥 156</div>
-                  <div className="text-gray-300">Novas Ofertas Hoje</div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                  <div className="text-center mb-6">
+                    <div className="text-4xl font-bold mb-2">🔥 {stats.todayProducts}</div>
+                    <div className="text-gray-300">Ofertas Publicadas</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-4 bg-white/5 rounded-lg">
+                      <div className="text-2xl font-bold">€ {Math.floor(stats.totalSavings)}</div>
+                      <div className="text-sm text-gray-300">Economias Totais</div>
+                    </div>
+                    <div className="text-center p-4 bg-white/5 rounded-lg">
+                      <div className="text-2xl font-bold">{stats.activeStores}</div>
+                      <div className="text-sm text-gray-300">Lojas Parceiras</div>
+                    </div>
+                    <div className="text-center p-4 bg-white/5 rounded-lg">
+                      <div className="text-2xl font-bold">{stats.activeCategories}</div>
+                      <div className="text-sm text-gray-300">Categorias</div>
+                    </div>
+                    <div className="text-center p-4 bg-white/5 rounded-lg">
+                      <div className="text-2xl font-bold">24/7</div>
+                      <div className="text-sm text-gray-300">Monitoramento</div>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-white/5 rounded-lg">
-                    <div className="text-2xl font-bold">€ 12.4K</div>
-                    <div className="text-sm text-gray-300">Economizado Hoje</div>
-                  </div>
-                  <div className="text-center p-4 bg-white/5 rounded-lg">
-                    <div className="text-2xl font-bold">98%</div>
-                    <div className="text-sm text-gray-300">Avaliação Positiva</div>
-                  </div>
-                  <div className="text-center p-4 bg-white/5 rounded-lg">
-                    <div className="text-2xl font-bold">45K</div>
-                    <div className="text-sm text-gray-300">Membros Ativos</div>
-                  </div>
-                  <div className="text-center p-4 bg-white/5 rounded-lg">
-                    <div className="text-2xl font-bold">24/7</div>
-                    <div className="text-sm text-gray-300">Ofertas Monitorizadas</div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

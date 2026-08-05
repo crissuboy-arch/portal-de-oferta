@@ -1,40 +1,40 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Search, Sun, Moon, Heart, ShoppingBag, User, Menu, X, Bell } from "lucide-react"
 import { getCurrentPortal } from "@/lib/config/portals"
 import { Button } from "@/components/ui/button"
+import { TopBar } from "./top-bar"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const router = useRouter()
   const portal = getCurrentPortal()
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/buscar?q=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchQuery("")
+    }
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch(e)
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-primary text-white">
+      {/* Top Bar Editável */}
+      <TopBar />
+      
       <div className="container mx-auto px-4">
-        {/* Top Bar */}
-        <div className="flex h-12 items-center justify-between border-b border-gray-800">
-          <div className="flex items-center space-x-4 text-sm">
-            <span className="hidden md:inline">🎁 Oferta do dia: MacBook Air M2 por € 899</span>
-            <span className="hidden lg:inline">🔥 156 novas ofertas hoje</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-1 text-sm hover:text-orange-400">
-              <Bell className="h-4 w-4" />
-              <span className="hidden sm:inline">Alertas</span>
-            </button>
-            <button 
-              onClick={() => setDarkMode(!darkMode)}
-              className="flex items-center space-x-1 text-sm hover:text-orange-400"
-            >
-              {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              <span className="hidden sm:inline">Tema</span>
-            </button>
-          </div>
-        </div>
-
         {/* Main Header */}
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -78,19 +78,29 @@ export function Header() {
           <div className="flex items-center space-x-3">
             {/* Search */}
             <div className="hidden md:flex relative">
-              <input
-                type="text"
-                placeholder={portal.country === "PT" ? "Buscar produtos, ofertas, descontos..." :
-                          portal.country === "BR" ? "Buscar produtos, ofertas, descontos..." :
-                          portal.country === "ES" ? "Buscar productos, ofertas, descuentos..." :
-                          "Search products, deals, discounts..."}
-                className="w-64 lg:w-80 pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              <form onSubmit={handleSearch} className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder={portal.country === "PT" ? "Buscar produtos, ofertas, descontos..." :
+                            portal.country === "BR" ? "Buscar produtos, ofertas, descontos..." :
+                            portal.country === "ES" ? "Buscar productos, ofertas, descuentos..." :
+                            "Search products, deals, discounts..."}
+                  className="w-64 lg:w-80 pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+                <button type="submit" className="absolute left-3 top-2.5">
+                  <Search className="h-5 w-5 text-gray-400" />
+                </button>
+              </form>
             </div>
 
             {/* Mobile Search */}
-            <button className="md:hidden p-2">
+            <button 
+              className="md:hidden p-2"
+              onClick={() => router.push('/buscar')}
+            >
               <Search className="h-5 w-5" />
             </button>
 
@@ -98,7 +108,7 @@ export function Header() {
             <button className="relative p-2 hover:text-orange-400">
               <Heart className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-xs">
-                12
+                0
               </span>
             </button>
 
@@ -106,7 +116,7 @@ export function Header() {
             <button className="relative p-2 hover:text-orange-400">
               <ShoppingBag className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-xs">
-                3
+                0
               </span>
             </button>
 
@@ -122,16 +132,16 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-800 bg-gray-900 py-4">
             <div className="space-y-2 px-4">
-{portal.menuItems.map((item: any) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                className="block py-2 px-4 hover:bg-gray-800 rounded-lg"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
+              {portal.menuItems.map((item: any) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="block py-2 px-4 hover:bg-gray-800 rounded-lg"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
         )}
