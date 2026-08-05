@@ -3,22 +3,5 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "framework": "nextjs",
-  "functions": {
-    "api/*.ts": {
-      "maxDuration": 10
-    }
-  },
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": {
-      "description": "URL do projeto Supabase",
-      "required": true
-    },
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": {
-      "description": "Chave pública anônima do Supabase",
-      "required": true
-    }
-  },
-  "regions": ["fra1"],
-  "public": true
+  "framework": "nextjs"
 }
