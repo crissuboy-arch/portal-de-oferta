@@ -123,7 +123,9 @@ export default function ImportProductPage() {
   const handleCreateProduct = () => {
     if (extractedData) {
       // Store extracted data in localStorage for product creation page
-      localStorage.setItem('importedProductData', JSON.stringify(extractedData))
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('importedProductData', JSON.stringify(extractedData))
+      }
       router.push("/admin/produtos/novo")
     }
   }
@@ -155,20 +157,21 @@ export default function ImportProductPage() {
       <div className="bg-blue-900/20 border border-blue-700 rounded-xl p-6">
         <div className="flex items-start space-x-4">
           <Sparkles className="h-6 w-6 text-blue-400 flex-shrink-0 mt-1" />
-          <div>
-            <h3 className="text-lg font-medium text-white mb-2">Integração com IA</h3>
-            <p className="text-gray-300 mb-3">
-              Esta funcionalidade usa IA para extrair automaticamente informações de URLs, 
-              imagens e textos. Para habilitar, configure as seguintes variáveis de ambiente:
-            </p>
-            <div className="bg-gray-800/50 rounded-lg p-4">
-              <code className="text-sm text-gray-300">
-                NEXT_PUBLIC_GROQ_API_KEY=your_groq_api_key<br />
-                NEXT_PUBLIC_NVIDIA_API_KEY=your_nvidia_api_key<br />
-                NEXT_PUBLIC_OPENAI_API_KEY=your_openai_api_key
-              </code>
-            </div>
-          </div>
+<div>
+             <h3 className="text-lg font-medium text-white mb-2">Integração com IA</h3>
+             <p className="text-gray-300 mb-3">
+               Esta funcionalidade usa IA para extrair automaticamente informações de URLs, 
+               imagens e textos. Para habilitar, configure as seguintes variáveis de ambiente:
+             </p>
+             <div className="bg-gray-800/50 rounded-lg p-4">
+               <code className="text-sm text-gray-300">
+                 GROQ_API_KEY=sua_chave_groq<br />
+                 OPENAI_API_KEY=sua_chave_openai<br />
+                 NVIDIA_API_KEY=sua_chave_nvidia<br />
+                 OPENROUTER_API_KEY=sua_chave_openrouter
+               </code>
+             </div>
+           </div>
         </div>
       </div>
 

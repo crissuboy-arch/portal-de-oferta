@@ -27,10 +27,12 @@ export default function SupabaseSetupPage() {
   })
 
   useEffect(() => {
-    // Carregar configurações do localStorage
-    const savedConfig = localStorage.getItem('supabase-config')
-    if (savedConfig) {
-      setConfig(JSON.parse(savedConfig))
+    // Carregar configurações do localStorage apenas no cliente
+    if (typeof window !== 'undefined') {
+      const savedConfig = localStorage.getItem('supabase-config')
+      if (savedConfig) {
+        setConfig(JSON.parse(savedConfig))
+      }
     }
   }, [])
 
@@ -41,7 +43,9 @@ export default function SupabaseSetupPage() {
   }
 
   const saveConfig = () => {
-    localStorage.setItem('supabase-config', JSON.stringify(config))
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('supabase-config', JSON.stringify(config))
+    }
   }
 
   const testConnection = async () => {
@@ -175,7 +179,7 @@ export default function SupabaseSetupPage() {
         short_description: 'Produto criado durante setup',
         description: 'Produto de teste para validação do CRUD',
         original_price: 199.99,
-        current_price:“‘ 149.99,
+        current_price: 149.99,
         country_code: 'PT',
         currency: 'EUR',
         original_url: 'https://exemplo.com',
@@ -251,7 +255,7 @@ export default function SupabaseSetupPage() {
     
     for (let i = 0; i < tests.length; i++) {
       await tests[i]()
-      await new Promise(resolve => setTimeout(resolve, ‚ 500)) // Pequena pausa entre testes
+      await new Promise(resolve => setTimeout(resolve, 500)) // Pequena pausa entre testes
     }
     
     setLoading(false)
