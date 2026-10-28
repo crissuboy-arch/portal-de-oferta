@@ -1,0 +1,357 @@
+<title>Portal de Ofertas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hanken+Grotesk:wght@400;500;700&display=swap">
+<style>
+/* Layout: cabeçalho fixo com pesquisa, banner laranja, categorias, ofertas do dia, destaques e catálogo filtrável. Marca: laranja, branco e cinza. */
+:root{
+  --bg:#ffffff; --surface:#f4f3f1; --surface-2:#e8e6e2; --line:#dedbd6;
+  --ink:#1f1e1c; --muted:#625e58;
+  --accent:#f76b1c; --accent-strong:#bf4705; --on-accent:#1a1613;
+  --ok:#1b7a3e;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171717; --surface:#212121; --surface-2:#2c2c2b; --line:#3a3937;
+  --ink:#f3f1ee; --muted:#b0aba4; --accent-strong:#ff9b5e; --ok:#5ed08a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171717; --surface:#212121; --surface-2:#2c2c2b; --line:#3a3937;
+  --ink:#f3f1ee; --muted:#b0aba4; --accent-strong:#ff9b5e; --ok:#5ed08a; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;line-height:1.1;letter-spacing:-.01em}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin-inline:auto}
+svg.i{width:1.4em;height:1.4em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Cabeçalho */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:12px;flex-wrap:wrap}
+.logo{font-family:var(--font-display);font-weight:800;font-size:1.35rem;text-decoration:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.logo b{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--on-accent)}
+.search{flex:1 1 280px;min-width:0;display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid transparent;border-radius:999px;padding:0 16px}
+.search:focus-within{border-color:var(--accent)}
+.search input{flex:1;min-width:0;background:none;border:0;outline:0;padding:12px 0}
+.search input::placeholder{color:var(--muted)}
+.nav{display:flex;gap:6px;font-weight:700;font-size:.95rem}
+.nav a{text-decoration:none;padding:8px 12px;border-radius:999px}
+.nav a:hover{background:var(--surface)}
+
+/* Banner */
+.hero{margin-top:20px;background:var(--accent);color:var(--on-accent);border-radius:28px;overflow:hidden;position:relative}
+.hero .in{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:center;padding:clamp(24px,5vw,56px)}
+.hero h1{font-size:clamp(2.1rem,5.4vw,3.9rem);font-weight:800}
+.hero p{font-size:1.1rem;max-width:46ch;margin:14px 0 24px}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:13px 22px;font-weight:700;text-decoration:none;border:2px solid var(--on-accent);cursor:pointer;background:transparent}
+.btn.solid{background:var(--on-accent);color:#fff}
+.btn:hover{transform:translateY(-1px)}
+.hero .art{display:grid;grid-template-columns:1fr 1fr;gap:12px;transform:rotate(-4deg);min-width:0}
+.hero .art span{aspect-ratio:1;background:#fff;color:#1f1e1c;border-radius:20px;display:grid;place-items:center;box-shadow:0 10px 0 rgba(0,0,0,.12)}
+.hero .art span:nth-child(2n){background:#2a2926;color:#fff}
+.hero .art svg{width:38%;height:38%}
+
+/* Seções */
+section{margin-top:44px;scroll-margin-top:90px}
+.sh{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.sh h2{font-size:clamp(1.5rem,3.2vw,2.1rem);font-weight:800}
+.sh p{margin:4px 0 0;color:var(--muted)}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.cat-tile{display:flex;flex-direction:column;gap:10px;align-items:flex-start;text-align:left;background:var(--surface);border:2px solid transparent;border-radius:var(--radius);padding:16px;cursor:pointer;font-weight:700}
+.cat-tile svg{width:30px;height:30px;color:var(--accent-strong)}
+.cat-tile:hover,.cat-tile[aria-pressed="true"]{border-color:var(--accent)}
+.cat-tile[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.cat-tile[aria-pressed="true"] svg{color:var(--on-accent)}
+
+/* Cards */
+.row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(220px,260px);gap:16px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:10px}
+.row>*{scroll-snap-align:start}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-width:0}
+.card:hover{border-color:var(--accent)}
+.media{position:relative;aspect-ratio:1;background:var(--surface);display:grid;place-items:center}
+.media img{width:100%;height:100%;object-fit:contain}
+.media .ph{color:var(--muted);opacity:.55}
+.media .ph svg{width:64px;height:64px}
+.tags{position:absolute;left:10px;top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:.75rem;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--ink);color:var(--bg)}
+.tag.off{background:var(--accent);color:var(--on-accent)}
+.tag.ex{background:var(--surface-2);color:var(--ink)}
+.body{display:flex;flex-direction:column;gap:8px;padding:14px;flex:1}
+.body .c{font-size:.8rem;color:var(--muted);font-weight:500}
+.body h3{font-size:1.05rem;font-weight:600;font-family:var(--font-body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em;line-height:1.3}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-height:1.8em;font-variant-numeric:tabular-nums}
+.price strong{font-family:var(--font-display);font-size:1.5rem}
+.price s{color:var(--muted)}
+.price .see{color:var(--muted);font-size:.92rem}
+.buy{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--on-accent);font-weight:800;text-decoration:none;border-radius:999px;padding:12px 16px}
+.buy:hover{filter:brightness(.93)}
+.aff{margin:0;font-size:.75rem;color:var(--muted);text-align:center}
+
+/* Filtros */
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:end;background:var(--surface);border-radius:var(--radius);padding:14px;margin-bottom:16px}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;font-weight:700;color:var(--muted);min-width:0}
+.filters select,.filters input{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0;width:100%}
+.filters .f{flex:1 1 150px}
+.filters .p{flex:1 1 100px}
+.link{background:none;border:0;color:var(--accent-strong);font-weight:700;cursor:pointer;padding:9px 6px;text-decoration:underline}
+.empty{padding:36px 16px;text-align:center;background:var(--surface);border-radius:var(--radius);color:var(--muted)}
+.notice{background:var(--surface);border-left:4px solid var(--accent);border-radius:8px;padding:12px 14px;margin-top:16px;font-size:.92rem}
+
+/* Confiança */
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.trust div{display:flex;gap:12px;align-items:flex-start}
+.trust svg{color:var(--accent-strong);margin-top:2px}
+.trust b{display:block}
+.trust span{color:var(--muted);font-size:.93rem}
+
+footer{margin-top:56px;border-top:1px solid var(--line);padding-block:28px 120px;color:var(--muted);font-size:.9rem}
+footer p{max-width:80ch;margin:0 0 8px}
+
+/* Editor do dono (#editor) */
+.editor{background:var(--surface);border-radius:var(--radius);padding:18px}
+.editor form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.editor label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.85rem;min-width:0}
+.editor input[type=text],.editor input[type=number],.editor input[type=url],.editor select,.editor input[type=file]{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+.editor .chk{flex-direction:row;align-items:center;gap:8px}
+.editor .full{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap}
+.mini{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.mini img{width:44px;height:44px;object-fit:contain;background:var(--bg);border-radius:8px}
+.mini span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Cookies e aviso */
+.cookies{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--ink);color:var(--bg);
+  padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.cookies .wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.cookies p{margin:0;flex:1 1 320px;font-size:.92rem}
+.cookies .b{display:flex;gap:8px;flex-wrap:wrap}
+.cookies button{border-radius:999px;padding:10px 18px;font-weight:700;cursor:pointer;border:2px solid var(--bg);background:transparent;color:var(--bg)}
+.cookies button.yes{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;z-index:50;font-weight:700;max-width:92vw;text-align:center}
+
+@media (max-width:760px){
+  .hero .in{grid-template-columns:1fr}
+  .hero .art{display:none}
+  .nav{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:hover{transform:none}}
+</style>
+
+<header class="top"><div class="wrap">
+  <a class="logo" href="#topo" id="topo"><b><svg class="i" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01"/></svg></b>Portal de Ofertas</a>
+  <label class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    <input id="q" type="search" placeholder="Procura impressora 3D, fones, joias..." aria-label="Pesquisar ofertas" autocomplete="off"></label>
+  <nav class="nav"><a href="#dia">Ofertas do dia</a><a href="#categorias">Categorias</a><a href="#ofertas">Todas</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="hero"><div class="in">
+    <div>
+      <h1>As melhores ofertas da Amazon, num só lugar.</h1>
+      <p>Impressoras 3D, tecnologia, joias, casa e muito mais. Escolhe o produto e finaliza a compra direto na Amazon.</p>
+      <div class="cta"><a class="btn solid" href="#dia">Ver ofertas do dia</a><a class="btn" href="#categorias">Explorar categorias</a></div>
+    </div>
+    <div class="art" aria-hidden="true" id="art"></div>
+  </div></div>
+
+  <section id="categorias"><div class="sh"><div><h2>Categorias</h2><p>Toca numa categoria para filtrar as ofertas.</p></div></div>
+    <div class="cats" id="cats"></div></section>
+
+  <section id="dia" hidden><div class="sh"><div><h2>Ofertas do dia</h2><p>Os achados que merecem um olhar hoje.</p></div></div>
+    <div class="row" id="rowDia"></div></section>
+
+  <section id="destaques" hidden><div class="sh"><div><h2>Produtos em destaque</h2></div></div>
+    <div class="grid" id="gridDestaque"></div></section>
+
+  <section id="ofertas"><div class="sh"><div><h2>Todas as ofertas</h2><p id="count"></p></div></div>
+    <div class="filters">
+      <label class="f">Categoria<select id="fCat"></select></label>
+      <label class="f">Loja<select id="fLoja"></select></label>
+      <label class="p">Preço mín.<input id="fMin" type="number" min="0" step="1" inputmode="decimal" placeholder="0"></label>
+      <label class="p">Preço máx.<input id="fMax" type="number" min="0" step="1" inputmode="decimal" placeholder="sem limite"></label>
+      <label class="f">Ordenar<select id="fSort"><option value="rel">Relevância</option><option value="asc">Menor preço</option><option value="desc">Maior preço</option><option value="off">Maior desconto</option></select></label>
+      <button class="link" id="clear" type="button">Limpar filtros</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="notice" id="exNotice" hidden>Estes cartões são exemplos do visual. Os produtos reais aparecem aqui assim que forem adicionados.</div>
+  </section>
+
+  <section><div class="trust">
+    <div><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><p style="margin:0"><b>Compra direto na Amazon</b><span>Pagamento, entrega e garantia são da Amazon.</span></p></div>
+    <div><svg class="i" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12z"/></svg><p style="margin:0"><b>Preço sempre atualizado lá</b><span>Preços e stock mudam. Confirma o valor final na página do produto.</span></p></div>
+    <div><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><p style="margin:0"><b>Links de afiliado identificados</b><span>Cada cartão avisa quando o link é de afiliado.</span></p></div>
+  </div></section>
+
+  <section id="editor-area" hidden><div class="sh"><div><h2>Adicionar produto</h2><p>Área do dono. Fica guardado só neste navegador.</p></div></div>
+    <div class="editor">
+      <form id="form">
+        <label>Nome do produto<input id="eTitulo" type="text" required maxlength="120"></label>
+        <label>Categoria<select id="eCat"></select></label>
+        <label>Link da Amazon (afiliado)<input id="eLink" type="url" required placeholder="https://www.amazon..."></label>
+        <label>Foto do produto<input id="eFoto" type="file" accept="image/*"></label>
+        <label>Preço atual (opcional)<input id="ePreco" type="number" min="0" step="0.01"></label>
+        <label>Preço antes (opcional)<input id="eAntes" type="number" min="0" step="0.01"></label>
+        <label class="chk"><input id="eDia" type="checkbox"> Mostrar em Ofertas do dia</label>
+        <label class="chk"><input id="eDest" type="checkbox"> Mostrar em Destaque</label>
+        <div class="full"><button class="btn solid" type="submit" style="color:#fff">Adicionar ao portal</button>
+          <button class="btn" type="button" id="copyJson">Copiar dados dos produtos</button></div>
+      </form>
+      <div id="mine"></div>
+    </div></section>
+</main>
+
+<footer><div class="wrap">
+  <p><b>Aviso de afiliado.</b> Este portal usa links de afiliado da Amazon. Se comprares por um deles, podemos receber uma comissão, sem custo extra para ti.</p>
+  <p>Os produtos, imagens e marcas pertencem aos respetivos donos. O preço e a disponibilidade finais são os da página da Amazon.</p>
+</div></footer>
+
+<div class="cookies" id="cookies" hidden><div class="wrap">
+  <p>Usamos cookies para lembrar as tuas preferências e medir visitas. Os links da Amazon também podem guardar cookies de afiliado.</p>
+  <div class="b"><button type="button" id="ckOnly">Só essenciais</button><button type="button" class="yes" id="ckYes">Aceitar</button></div>
+</div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ===== CONFIGURAÇÃO: edita aqui ===== */
+const CONFIG = { locale: "pt-PT", moeda: "EUR" };
+const CATEGORIAS = ["Impressoras 3D","Tecnologia","Casa e cozinha","Beleza","Moda","Joias","Ferramentas","Promoções especiais"];
+
+/* ===== PRODUTOS =====
+ Cada produto: titulo, categoria, imagem (endereço ou ficheiro), link (afiliado Amazon),
+ loja (padrão "Amazon"), preco e precoAntes (opcionais, só se quiseres mostrar), dia, destaque. */
+const PRODUTOS = [
+  /* exemplo:
+  { id:"p1", titulo:"Nome do produto", categoria:"Tecnologia", imagem:"img/p1.jpg",
+    link:"https://www.amazon.../?tag=O-TEU-ID", loja:"Amazon", dia:true, destaque:true } */
+];
+
+/* Cartões de demonstração, usados só enquanto não houver produtos reais. */
+const EXEMPLOS = CATEGORIAS.slice(0,8).flatMap((c,i)=>[{id:"ex"+i,titulo:"Produto de exemplo para "+c.toLowerCase(),categoria:c,loja:"Amazon",dia:i<4,destaque:i%2===0,exemplo:true}]);
+
+const ICONS = {
+ "Impressoras 3D":'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zM12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
+ "Tecnologia":'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+ "Casa e cozinha":'<path d="M5 10h12v4a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5v-4zM17 11h2a2 2 0 0 1 0 4h-2M8 3v3M12 3v3"/>',
+ "Beleza":'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16z"/>',
+ "Moda":'<path d="M12 7a2 2 0 1 0-2-2M12 7v2L3 16a1.5 1.5 0 0 0 1 2.6h16A1.5 1.5 0 0 0 21 16l-9-7"/>',
+ "Joias":'<path d="M6 4h12l3 5-9 11L3 9l3-5zM3 9h18M9 4l-1.5 5L12 20M15 4l1.5 5L12 20"/>',
+ "Ferramentas":'<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5zM14.5 6.5l3-3 3 3-3 3"/>',
+ "Promoções especiais":'<path d="M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01"/>'
+};
+const svg = (c)=>'<svg class="i" viewBox="0 0 24 24">'+(ICONS[c]||ICONS["Promoções especiais"])+'</svg>';
+const $ = (id)=>document.getElementById(id);
+const esc = (s)=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const money = (n)=>new Intl.NumberFormat(CONFIG.locale,{style:"currency",currency:CONFIG.moeda}).format(n);
+const norm = (s)=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+
+let custom = [];
+try{ custom = JSON.parse(localStorage.getItem("portal-custom")||"[]"); }catch(e){ custom = []; }
+const saveCustom = ()=>{ try{ localStorage.setItem("portal-custom",JSON.stringify(custom)); }catch(e){ toast("Não foi possível guardar neste navegador."); } };
+const real = ()=>PRODUTOS.concat(custom);
+const all = ()=>{ const r = real(); return r.length ? r : EXEMPLOS; };
+
+const state = { q:"", cat:"", loja:"", min:null, max:null, sort:"rel" };
+
+function desconto(p){ return (p.preco&&p.precoAntes&&p.precoAntes>p.preco) ? Math.round((1-p.preco/p.precoAntes)*100) : 0; }
+
+function card(p){
+  const off = desconto(p);
+  const tags = (p.dia?'<span class="tag">Oferta do dia</span>':'') + (off?'<span class="tag off">-'+off+'%</span>':'') + (p.exemplo?'<span class="tag ex">Exemplo</span>':'');
+  const img = p.imagem ? '<img loading="lazy" alt="'+esc(p.titulo)+'" src="'+esc(p.imagem)+'">' : '<div class="ph">'+svg(p.categoria)+'</div>';
+  const preco = p.preco ? '<strong>'+money(p.preco)+'</strong>'+(off?'<s>'+money(p.precoAntes)+'</s>':'') : '<span class="see">Ver preço na Amazon</span>';
+  const link = p.exemplo ? '#ofertas' : esc(p.link||"#");
+  const ext = p.exemplo ? '' : ' target="_blank" rel="sponsored nofollow noopener noreferrer"';
+  return '<article class="card"><div class="media">'+img+'<div class="tags">'+tags+'</div></div>'+
+    '<div class="body"><span class="c">'+esc(p.categoria)+'</span><h3 title="'+esc(p.titulo)+'">'+esc(p.titulo)+'</h3>'+
+    '<div class="price">'+preco+'</div>'+
+    '<a class="buy" data-ex="'+(p.exemplo?1:0)+'" href="'+link+'"'+ext+'>Comprar agora</a>'+
+    '<p class="aff">'+esc(p.loja||"Amazon")+' · link de afiliado</p></div></article>';
+}
+
+function filtered(){
+  const q = norm(state.q);
+  let list = all().filter(p=>{
+    if(state.cat && p.categoria!==state.cat) return false;
+    if(state.loja && (p.loja||"Amazon")!==state.loja) return false;
+    if(q && !norm(p.titulo+" "+p.categoria+" "+(p.loja||"Amazon")).includes(q)) return false;
+    if(state.min!=null || state.max!=null){
+      if(!p.preco) return false;
+      if(state.min!=null && p.preco<state.min) return false;
+      if(state.max!=null && p.preco>state.max) return false;
+    }
+    return true;
+  });
+  if(state.sort==="asc") list.sort((a,b)=>(a.preco??Infinity)-(b.preco??Infinity));
+  if(state.sort==="desc") list.sort((a,b)=>(b.preco??-1)-(a.preco??-1));
+  if(state.sort==="off") list.sort((a,b)=>desconto(b)-desconto(a));
+  return list;
+}
+
+function render(){
+  const list = filtered();
+  const base = all();
+  const dia = base.filter(p=>p.dia), dest = base.filter(p=>p.destaque);
+  $("dia").hidden = !dia.length; $("rowDia").innerHTML = dia.map(card).join("");
+  $("destaques").hidden = !dest.length; $("gridDestaque").innerHTML = dest.map(card).join("");
+  $("grid").innerHTML = list.length ? list.map(card).join("") : '<div class="empty" style="grid-column:1/-1">Nenhuma oferta com estes filtros. Tenta outra categoria ou limpa os filtros.</div>';
+  $("count").textContent = list.length + (list.length===1?" oferta encontrada":" ofertas encontradas");
+  $("exNotice").hidden = real().length>0;
+  document.querySelectorAll(".cat-tile").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.c===state.cat)));
+  $("mine").innerHTML = custom.map((p,i)=>'<div class="mini">'+(p.imagem?'<img alt="" src="'+esc(p.imagem)+'">':'')+'<span>'+esc(p.titulo)+'</span><button class="link" type="button" data-rm="'+i+'">Remover</button></div>').join("");
+}
+
+/* Montagem inicial */
+$("art").innerHTML = ["Impressoras 3D","Joias","Tecnologia","Casa e cozinha"].map(c=>'<span>'+svg(c)+'</span>').join("");
+$("cats").innerHTML = CATEGORIAS.map(c=>'<button class="cat-tile" type="button" data-c="'+esc(c)+'" aria-pressed="false">'+svg(c)+c+'</button>').join("");
+const opts = '<option value="">Todas</option>'+CATEGORIAS.map(c=>'<option>'+esc(c)+'</option>').join("");
+$("fCat").innerHTML = opts;
+$("eCat").innerHTML = CATEGORIAS.map(c=>'<option>'+esc(c)+'</option>').join("");
+function lojas(){ const s = Array.from(new Set(all().map(p=>p.loja||"Amazon"))); $("fLoja").innerHTML = '<option value="">Todas</option>'+s.map(l=>'<option>'+esc(l)+'</option>').join(""); $("fLoja").value = state.loja; }
+
+$("cats").addEventListener("click",e=>{ const b=e.target.closest(".cat-tile"); if(!b) return; state.cat = state.cat===b.dataset.c ? "" : b.dataset.c; $("fCat").value = state.cat; render(); $("ofertas").scrollIntoView(); });
+$("fCat").onchange = e=>{ state.cat=e.target.value; render(); };
+$("fLoja").onchange = e=>{ state.loja=e.target.value; render(); };
+$("fSort").onchange = e=>{ state.sort=e.target.value; render(); };
+$("fMin").oninput = e=>{ state.min = e.target.value===""?null:Number(e.target.value); render(); };
+$("fMax").oninput = e=>{ state.max = e.target.value===""?null:Number(e.target.value); render(); };
+$("q").oninput = e=>{ state.q=e.target.value; render(); if(state.q) $("ofertas").scrollIntoView(); };
+$("clear").onclick = ()=>{ Object.assign(state,{q:"",cat:"",loja:"",min:null,max:null,sort:"rel"}); ["q","fMin","fMax"].forEach(i=>$(i).value=""); $("fCat").value=""; $("fLoja").value=""; $("fSort").value="rel"; render(); };
+document.addEventListener("click",e=>{ const a=e.target.closest(".buy"); if(a && a.dataset.ex==="1"){ e.preventDefault(); toast("Exemplo. Aqui vai o teu link de afiliado da Amazon."); } });
+
+let tt; function toast(m){ const t=$("toast"); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,3200); }
+
+/* Cookies */
+try{ if(!localStorage.getItem("portal-cookies")) $("cookies").hidden=false; }catch(e){ $("cookies").hidden=false; }
+function ck(v){ try{ localStorage.setItem("portal-cookies",v); }catch(e){} $("cookies").hidden=true; }
+$("ckYes").onclick=()=>ck("all"); $("ckOnly").onclick=()=>ck("essential");
+
+/* Área do dono: abre com #editor no fim do endereço */
+function checkEditor(){ $("editor-area").hidden = location.hash!=="#editor"; if(location.hash==="#editor") $("editor-area").scrollIntoView(); }
+window.addEventListener("hashchange",checkEditor); checkEditor();
+
+function resize(file){ return new Promise((ok,no)=>{ const r=new FileReader(); r.onerror=no; r.onload=()=>{ const im=new Image(); im.onerror=no; im.onload=()=>{ const s=Math.min(1,640/Math.max(im.width,im.height)); const c=document.createElement("canvas"); c.width=Math.round(im.width*s); c.height=Math.round(im.height*s); c.getContext("2d").drawImage(im,0,0,c.width,c.height); ok(c.toDataURL("image/jpeg",.82)); }; im.src=r.result; }; r.readAsDataURL(file); }); }
+
+$("form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const link = $("eLink").value.trim();
+  if(!/^https?:\/\//i.test(link)){ toast("O link precisa de começar por https://"); return; }
+  const p = { id:"c"+Date.now(), titulo:$("eTitulo").value.trim(), categoria:$("eCat").value, link, loja:"Amazon", dia:$("eDia").checked, destaque:$("eDest").checked };
+  const pr=parseFloat($("ePreco").value), an=parseFloat($("eAntes").value);
+  if(pr>0) p.preco=pr; if(an>0) p.precoAntes=an;
+  const f=$("eFoto").files[0];
+  if(f){ try{ p.imagem = await resize(f); }catch(err){ toast("Não foi possível ler a foto."); return; } }
+  custom.push(p); saveCustom(); $("form").reset(); lojas(); render(); toast("Produto adicionado.");
+});
+$("mine").addEventListener("click",e=>{ const b=e.target.closest("[data-rm]"); if(!b) return; custom.splice(Number(b.dataset.rm),1); saveCustom(); lojas(); render(); });
+$("copyJson").onclick=()=>{ const txt=JSON.stringify(custom,null,2); (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast("Dados copiados.")).catch(()=>toast("Não foi possível copiar neste ecrã.")); };
+
+lojas(); render();
+</script>
