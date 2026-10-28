@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -35,7 +35,7 @@ interface SearchResult {
   }>
 }
 
-export default function BuscarPage() {
+function BuscarPageContent() {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
   const [results, setResults] = useState<SearchResult | null>(null)
@@ -318,5 +318,16 @@ export default function BuscarPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// useSearchParams() exige Suspense no App Router: sem ele, o prerender
+// do build falha. O conteúdo fica no componente interno; a página
+// exporta só o wrapper com fallback.
+export default function BuscarPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">A carregar...</div>}>
+      <BuscarPageContent />
+    </Suspense>
   )
 }
