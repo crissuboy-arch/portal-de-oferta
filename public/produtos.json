@@ -1,0 +1,20 @@
+[
+  {
+    "id": "B0HN7WY9WS",
+    "titulo": "Auriculares de condução óssea, abertos e sem fios",
+    "categoria": "Tecnologia",
+    "imagem": "https://m.media-amazon.com/images/I/51mgaIpoQbL._AC_SL1500_.jpg",
+    "link": "https://link.amazon/B0hFGdw0U",
+    "loja": "Amazon",
+    "destaque": true
+  },
+  {
+    "id": "B089Q9NW11",
+    "titulo": "Lâmpada UV LED profissional para unhas SUNUV SUN3, com sensor automático",
+    "categoria": "Beleza",
+    "imagem": "https://m.media-amazon.com/images/I/61-0vaNAfEL._AC_SL1200_.jpg",
+    "link": "https://link.amazon/B0cLezJJd",
+    "loja": "Amazon",
+    "destaque": true
+  }
+]
