@@ -16,5 +16,64 @@
     "link": "https://link.amazon/B0cLezJJd",
     "loja": "Amazon",
     "destaque": true
+  },
+  {
+    "id": "B0CZV1KPXL",
+    "titulo": "Caixa de PC Corsair 3500X ARGB Média-Torre ATX",
+    "categoria": "Tecnologia",
+    "imagem": "https://m.media-amazon.com/images/I/71l7PBnkRXL._AC_SL1500_.jpg",
+    "link": "https://www.amazon.es/dp/B0CZV1KPXL?tag=portaldeofert-21",
+    "loja": "Amazon",
+    "destaque": false
+  },
+  {
+    "id": "B0G4CRDPFS",
+    "titulo": "Máquina de barbear elétrica Braun Series 9 Pro+ 9577cc",
+    "categoria": "Beleza",
+    "link": "https://www.amazon.es/dp/B0G4CRDPFS?tag=portaldeofert-21",
+    "loja": "Amazon",
+    "destaque": false
+  },
+  {
+    "id": "B0GFG86MCK",
+    "titulo": "Gira-discos Sony PS-LX310BT com Bluetooth",
+    "categoria": "Tecnologia",
+    "link": "https://www.amazon.es/dp/B0GFG86MCK?tag=portaldeofert-21",
+    "loja": "Amazon",
+    "destaque": false
+  },
+  {
+    "id": "B0BWNQW8MB",
+    "titulo": "Berbequim percutor a bateria Bosch EasyImpact 18V-40",
+    "categoria": "Ferramentas",
+    "imagem": "https://voola.me/wp-content/uploads/2026/10/61nyxO1DXvL._AC_SL1500_-197x300.webp",
+    "link": "https://www.amazon.es/dp/B0BWNQW8MB?tag=portaldeofert-21",
+    "loja": "Amazon",
+    "destaque": false
+  },
+  {
+    "id": "B085DKD2R3",
+    "titulo": "Frigideira antiaderente de indução AmazonBasics em aço inox",
+    "categoria": "Casa e cozinha",
+    "link": "https://www.amazon.es/dp/B085DKD2R3?tag=portaldeofert-21",
+    "loja": "Amazon",
+    "destaque": false
+  },
+  {
+    "id": "B0C4T4L4G8",
+    "titulo": "Mochila PUMA Phase",
+    "categoria": "Moda",
+    "imagem": "https://voola.me/wp-content/uploads/2026/10/61l0Md0BDfL._AC_SL1500_-197x300.webp",
+    "link": "https://www.amazon.es/dp/B0C4T4L4G8?tag=portaldeofert-21",
+    "loja": "Amazon",
+    "destaque": false
+  },
+  {
+    "id": "B000C1UBQU",
+    "titulo": "Calvin Klein Everyone Eau de Toilette, 200 ml",
+    "categoria": "Beleza",
+    "link": "https://www.amazon.es/dp/B000C1UBQU?tag=portaldeofert-21",
+    "loja": "Amazon",
+    "destaque": false
   }
 ]
