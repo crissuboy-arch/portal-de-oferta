@@ -164,7 +164,7 @@ svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.7;st
 
 /* Rodapé */
 .foot{background:var(--bar);color:var(--bar-muted);margin-top:48px;padding-block:32px 110px;font-size:.92rem}
-.foot .wrap{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:28px}
+.foot .wrap{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px}
 .foot h4{margin:0 0 10px;color:var(--on-bar);font-family:var(--font-display);font-size:1rem}
 .foot p{margin:0 0 8px}
 .foot ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -198,9 +198,9 @@ svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.7;st
 </style>
 
 <div class="band util"><div class="wrap">
-  <span><svg class="i" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01"/></svg>Ofertas escolhidas à mão, num só lugar</span>
-  <span><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4"/></svg>Compras feitas direto na Amazon</span>
-  <span><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Links de afiliado identificados</span>
+  <span><svg class="i" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01"/></svg>Todas as ofertas de Portugal num só lugar</span>
+  <span><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4"/></svg>Compras feitas direto na loja</span>
+  <span><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Ofertas escolhidas à mão</span>
 </div></div>
 
 <header class="band head"><div class="wrap">
@@ -209,7 +209,7 @@ svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.7;st
     <input id="q" type="search" placeholder="Procura produtos, marcas ou categorias..." autocomplete="off">
     <button type="submit" aria-label="Pesquisar"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button></form>
   <button class="hbtn" id="favBtn" type="button" aria-pressed="false"><svg class="i" viewBox="0 0 24 24"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1L12 21.5l8.8-8.8a5 5 0 0 0 0-7.1z"/></svg><span>Favoritos (<span id="favN">0</span>)</span></button>
-  <div class="badge">Parceiro Afiliado<br>Amazon</div>
+  
 </div></header>
 
 <nav class="band nav" aria-label="Categorias"><div class="wrap" id="navCats"></div></nav>
@@ -237,15 +237,15 @@ svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.7;st
 
 <footer class="band foot"><div class="wrap">
   <div><a class="logo" href="#topo"><b><svg class="i" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01"/></svg></b><span><small>Portal de</small><strong>Ofertas</strong></span></a>
-    <p style="margin-top:12px">Achadinhos e ofertas da Amazon, escolhidos a dedo.</p></div>
-  <div><h4>Como funciona</h4><ul><li>Escolhe o produto</li><li>Clica em Comprar agora</li><li>Finaliza a compra na Amazon</li></ul></div>
+    <p style="margin-top:12px">Todas as ofertas de Portugal num só lugar.</p></div>
+  <div><h4>Como funciona</h4><ul><li>Escolhe o produto</li><li>Clica em Comprar agora</li><li>Finaliza a compra na loja</li></ul></div>
   <div><h4>Categorias</h4><ul id="footCats"></ul></div>
-  <div><h4>Transparência</h4><p>Este portal usa links de afiliado. Se comprares por um deles, podemos receber uma comissão, sem custo extra para ti.</p></div>
-  <div class="legal">Como Afiliado Amazon, obtenho receitas das compras qualificadas. Os produtos, imagens e marcas pertencem aos respetivos donos. O preço e a disponibilidade finais são sempre os da página da Amazon.</div>
+  
+  <div class="legal">Como Afiliado Amazon, obtenho receitas das compras qualificadas. Os produtos, imagens e marcas pertencem aos respetivos donos. O preço e a disponibilidade finais são sempre os da página da loja.</div>
 </div></footer>
 
 <div class="cookies" id="cookies" hidden><div class="wrap">
-  <p>Usamos cookies para lembrar as tuas preferências e medir visitas. Os links da Amazon também podem guardar cookies de afiliado.</p>
+  <p>Usamos cookies para lembrar as tuas preferências e medir visitas. Os links das lojas também podem guardar cookies.</p>
   <div class="b"><button type="button" id="ckOnly">Só essenciais</button><button type="button" class="yes" id="ckYes">Aceitar</button></div>
 </div></div>
 
@@ -296,10 +296,10 @@ function card(p){
   const fav = favs.has(p.id);
   return '<article class="card"><div class="media">'+media(p)+'<div class="tags">'+tags+'</div>'+
     '<button class="heart" type="button" data-fav="'+esc(p.id)+'" aria-pressed="'+fav+'" aria-label="Guardar nos favoritos"><svg class="i" viewBox="0 0 24 24"><path d="M20.8 5.6a5 5 0 0 0-7.1 0L12 7.3l-1.7-1.7a5 5 0 0 0-7.1 7.1L12 21.5l8.8-8.8a5 5 0 0 0 0-7.1z"/></svg></button></div>'+
-    '<div class="body"><span class="c">'+esc(p.categoria)+'</span><h3 title="'+esc(p.titulo)+'">'+esc(p.titulo)+'</h3>'+
+    '<div class="body"><span class="c">'+esc(p.categoria)+' · '+esc(lojaDe(p))+'</span><h3 title="'+esc(p.titulo)+'">'+esc(p.titulo)+'</h3>'+
     (preco?'<div class="price">'+preco+'</div>':'')+
     '<a class="buy" href="'+esc(p.link)+'" target="_blank" rel="sponsored nofollow noopener noreferrer">Comprar agora</a>'+
-    '<p class="aff">'+esc(lojaDe(p))+' · link de afiliado</p></div></article>';
+    '</div></article>';
 }
 function mini(p){
   return '<div class="mini"><div class="th">'+media(p)+'</div><div class="tx"><h3>'+esc(p.titulo)+'</h3>'+
@@ -392,7 +392,7 @@ document.addEventListener("error",e=>{
 
 /* ---------- Banner ---------- */
 const SLIDES = [
- { h:"Achadinhos da Amazon, escolhidos a dedo", p:"Tecnologia, casa, beleza e muito mais. Clicas, vais direto à Amazon e finalizas lá.", b:"Ver ofertas", c:"", art:["Tecnologia","Casa e cozinha","Beleza","Joias"], stamp:true },
+ { h:"Todas as ofertas de Portugal num só lugar", p:"Tecnologia, casa, beleza e muito mais. Clicas e finalizas a compra direto na loja.", b:"Ver ofertas", c:"", art:["Tecnologia","Casa e cozinha","Beleza","Joias"], stamp:true },
  { h:"Impressoras 3D e ferramentas", p:"Para quem imprime em casa ou monta a própria oficina.", b:"Ver impressoras 3D", c:"Impressoras 3D", art:["Impressoras 3D","Ferramentas"] },
  { h:"Joias, moda e beleza", p:"Presentes e mimos para todas as ocasiões.", b:"Ver joias", c:"Joias", art:["Joias","Moda","Beleza"] }
 ];
