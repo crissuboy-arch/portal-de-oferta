@@ -69,6 +69,8 @@ svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.7;st
 .nav button{display:flex;align-items:center;gap:8px;background:none;border:0;padding:13px 14px;font-weight:700;white-space:nowrap;border-radius:0}
 .nav button:hover{background:rgba(0,0,0,.1)}
 .nav button.all{background:rgba(0,0,0,.12)}
+@media (min-width:901px){.nav .wrap{flex-wrap:wrap;overflow-x:visible}.chips{flex-wrap:wrap;overflow-x:visible}}
+body.ck-open{padding-bottom:var(--ck-h,120px)}
 
 /* Banner */
 .hero{margin-top:18px;border-radius:24px;overflow:hidden;position:relative;color:#fff;
@@ -230,7 +232,7 @@ svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.7;st
     <div id="content">
       <section class="sec" id="dia" hidden><div class="sh"><div><h2>Ofertas do dia</h2><p>Os achados que merecem um olhar hoje.</p></div></div><div class="row" id="rowDia"></div></section>
       <section class="sec" id="destaques" hidden><div class="sh"><div><h2>Em destaque</h2><p>Escolhidos por nós.</p></div></div><div class="minis" id="minis"></div></section>
-      <section class="sec" id="ofertas"><div class="sh"><div><h2>Todas as ofertas</h2><p id="count"></p></div></div><div class="grid" id="grid"></div></section>
+      <section class="sec" id="ofertas"><div class="sh"><div><h2 id="ofertasTitulo">Todas as ofertas</h2><p id="count"></p></div></div><div class="grid" id="grid"></div></section>
     </div>
   </div>
 </main>
@@ -308,7 +310,6 @@ function mini(p){
   return '<div class="mini"><div class="th">'+media(p)+'</div><div class="tx"><h3>'+esc(p.titulo)+'</h3>'+
     '<a href="'+esc(p.link)+'" target="_blank" rel="sponsored nofollow noopener noreferrer">Comprar agora</a></div></div>';
 }
-const slot = () => '<article class="card slot"><svg class="i" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01"/></svg><b>Nova oferta em breve</b><span>Estamos a escolher os próximos achados.</span></article>';
 
 /* ---------- Filtros ---------- */
 function filtered(){
@@ -338,10 +339,14 @@ function render(){
   $("dia").hidden = f || !dia.length; $("rowDia").innerHTML = dia.map(card).join("");
   $("destaques").hidden = f || !dest.length; $("minis").innerHTML = dest.map(mini).join("");
   let html = list.map(card).join("");
-  if(!f){ for(let i=list.length;i<Math.max(8,Math.ceil(list.length/4)*4);i++) html += slot(); }
-  else if(!list.length) html = '<div class="empty">Nenhuma oferta com estes filtros. Tenta outra categoria ou limpa os filtros.</div>';
+  if(f && !list.length) html = '<div class="empty">Nenhuma oferta com estes filtros. Tenta outra categoria ou limpa os filtros.</div>';
   $("grid").innerHTML = html;
-  $("count").textContent = list.length ? list.length+(list.length===1?" oferta":" ofertas") : (f?"":"As ofertas aparecem aqui assim que forem adicionadas.");
+  $("ofertasTitulo").textContent = !f ? "Todas as ofertas"
+    : state.fav ? "Os teus favoritos"
+    : state.q ? 'Resultados para "'+state.q+'"'
+    : (state.cats.length===1 && !state.lojas.length && state.min==null && state.max==null) ? state.cats[0]
+    : "Ofertas filtradas";
+  $("count").textContent = list.length ? list.length+(list.length===1?" oferta":" ofertas") : (f?"":"Sem ofertas de momento.");
   $("favN").textContent = favs.size;
   $("favBtn").setAttribute("aria-pressed",String(state.fav));
   document.querySelectorAll("#chips .chip").forEach(b=>{
@@ -425,17 +430,23 @@ const fit = () => { $("filtros").open = mq.matches; };
 fit(); mq.addEventListener("change",fit);
 
 /* ---------- Cookies ---------- */
-try{ if(!localStorage.getItem("portal-cookies")) $("cookies").hidden=false; }catch(e){ $("cookies").hidden=false; }
-const ck = v => { try{ localStorage.setItem("portal-cookies",v); }catch(e){} $("cookies").hidden=true; };
+const ckShow = () => { $("cookies").hidden=false; document.body.classList.add("ck-open"); document.body.style.setProperty("--ck-h",($("cookies").offsetHeight+16)+"px"); };
+try{ if(!localStorage.getItem("portal-cookies")) ckShow(); }catch(e){ ckShow(); }
+const ck = v => { try{ localStorage.setItem("portal-cookies",v); }catch(e){} $("cookies").hidden=true; document.body.classList.remove("ck-open"); };
 $("ckYes").onclick=()=>ck("all"); $("ckOnly").onclick=()=>ck("essential");
 
 /* ---------- Arranque ---------- */
 async function load(){
+  let ok = false;
   try{
     const r = await fetch("produtos.json",{cache:"no-cache"});
-    if(r.ok){ const d = await r.json(); if(Array.isArray(d)) PRODUTOS = d.filter(p=>p && p.id && p.titulo && okUrl(p.link)); }
+    if(r.ok){ const d = await r.json(); if(Array.isArray(d)){ PRODUTOS = d.filter(p=>p && p.id && p.titulo && okUrl(p.link)); ok = true; } }
   }catch(e){}
+  if(!ok){ $("grid").innerHTML = '<div class="empty">Não foi possível carregar as ofertas. Atualiza a página dentro de momentos.</div>'; $("count").textContent=""; return; }
   buildSide(); render();
 }
-buildSide(); render(); load();
+/* Enquanto o produtos.json carrega, mostra só "A carregar" (sem contadores a 0 nem cartões vazios). */
+$("count").textContent = "A carregar ofertas…";
+$("grid").innerHTML = '<div class="empty" aria-live="polite">A carregar ofertas…</div>';
+load();
 </script>

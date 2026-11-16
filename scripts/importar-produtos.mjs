@@ -80,10 +80,15 @@ if (!Array.isArray(atuais) || !Array.isArray(novos)) throw new Error("Os dois fi
 
 const porId = new Map(atuais.map((p, i) => [p.id, i]));
 const vistosNoLote = new Set();
-const rel = { adicionados: [], atualizados: [], recusados: [] };
+const rel = { adicionados: [], atualizados: [], removidos: [], recusados: [] };
 
 for (const bruto of novos) {
   const id = String(bruto.id || "").trim().toUpperCase();
+  if (bruto.remover === true) {
+    if (porId.has(id)) { rel.removidos.push(id); porId.delete(id); }
+    else rel.recusados.push(`${id || "?"}: remover pedido mas o ASIN não existe`);
+    continue;
+  }
   const motivo =
     !ASIN_RE.test(id) ? "ASIN inválido" :
     vistosNoLote.has(id) ? "duplicado no próprio lote" :
@@ -97,6 +102,7 @@ for (const bruto of novos) {
     const i = porId.get(id);
     // Sem fonte autorizada não mexe na imagem já existente (nem a apaga nem a substitui).
     if (!fonteApi) delete p.imagem;
+    if (bruto.destaque === undefined) delete p.destaque;
     atuais[i] = { ...atuais[i], ...p };
     rel.atualizados.push(id);
   } else {
@@ -106,12 +112,13 @@ for (const bruto of novos) {
   }
 }
 
-console.log(`Adicionados: ${rel.adicionados.length}  Atualizados: ${rel.atualizados.length}  Recusados: ${rel.recusados.length}`);
+console.log(`Adicionados: ${rel.adicionados.length}  Atualizados: ${rel.atualizados.length}  Removidos: ${rel.removidos.length}  Recusados: ${rel.recusados.length}`);
 rel.recusados.forEach(r => console.log("  ✗ " + r));
 if (rel.recusados.length && !args.includes("--ignorar-recusados")) {
   console.error("Há produtos recusados. Corrige-os ou usa --ignorar-recusados. Nada foi escrito.");
   process.exit(1);
 }
 if (dryRun) { console.log("(dry-run: nada foi escrito)"); process.exit(0); }
-fs.writeFileSync(ALVO, JSON.stringify(atuais, null, 2) + "\n");
-console.log(`Escrito ${ALVO} (${atuais.length} produtos)`);
+const finais = atuais.filter(p => !rel.removidos.includes(p.id));
+fs.writeFileSync(ALVO, JSON.stringify(finais, null, 2) + "\n");
+console.log(`Escrito ${ALVO} (${finais.length} produtos)`);
