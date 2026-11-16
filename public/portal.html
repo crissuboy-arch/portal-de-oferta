@@ -241,7 +241,7 @@ svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.7;st
   <div><h4>Como funciona</h4><ul><li>Escolhe o produto</li><li>Clica em Comprar agora</li><li>Finaliza a compra na loja</li></ul></div>
   <div><h4>Categorias</h4><ul id="footCats"></ul></div>
   
-  <div class="legal">Como Afiliado Amazon, obtenho receitas das compras qualificadas. Os produtos, imagens e marcas pertencem aos respetivos donos. O preço e a disponibilidade finais são sempre os da página da loja.</div>
+  <div class="legal">En calidad de Afiliado de Amazon, obtengo ingresos por las compras adscritas que cumplen los requisitos aplicables. (Como Afiliado da Amazon, recebo comissões pelas compras qualificadas.) Os produtos, imagens e marcas pertencem aos respetivos donos. O preço e a disponibilidade finais são sempre os da página da loja.</div>
 </div></footer>
 
 <div class="cookies" id="cookies" hidden><div class="wrap">
@@ -251,7 +251,7 @@ svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.7;st
 
 <script>
 const CONFIG = { locale: "pt-PT", moeda: "EUR" };
-const CATEGORIAS = ["Impressoras 3D","Tecnologia","Casa e cozinha","Beleza","Moda","Joias","Ferramentas","Promoções especiais"];
+const CATEGORIAS = ["Impressoras 3D","Tecnologia","Casa e cozinha","Beleza","Moda","Joias","Ferramentas","Brinquedos e jogos","Desporto","Animais","Promoções especiais"];
 /* Os produtos ficam no ficheiro produtos.json (ao lado desta página).
    Cada produto: id, titulo, categoria, imagem, link, loja, e opcionais: preco, precoAntes, precoData, dia, destaque. */
 
@@ -263,6 +263,9 @@ const ICONS = {
  "Moda":'<path d="M12 7a2 2 0 1 0-2-2M12 7v2L3 16a1.5 1.5 0 0 0 1 2.6h16A1.5 1.5 0 0 0 21 16l-9-7"/>',
  "Joias":'<path d="M6 4h12l3 5-9 11L3 9l3-5zM3 9h18M9 4l-1.5 5L12 20M15 4l1.5 5L12 20"/>',
  "Ferramentas":'<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5zM14.5 6.5l3-3 3 3-3 3"/>',
+ "Brinquedos e jogos":'<rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M12 8v13M3 13h18M12 8c-1.5-3-5-4-5-1.5S10 8 12 8zM12 8c1.5-3 5-4 5-1.5S14 8 12 8z"/>',
+ "Desporto":'<circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10l4-3zM12 3v4M21 10l-5 0M3 10h5M7 20l2.5-5.5M17 20l-2.5-5.5"/>',
+ "Animais":'<circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M12 12c-3 0-6 4-6 6.5S9 21 12 20s6 1 6-1.5-3-6.5-6-6.5z"/>',
  "Promoções especiais":'<path d="M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01"/>',
  "Todas":'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'
 };
